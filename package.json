@@ -11,5 +11,8 @@
   "devDependencies": {
     "@playwright/test": "^1.56.1",
     "@types/node": "^24.10.1"
+  },
+  "dependencies": {
+    "deep-object-diff": "^1.1.9"
   }
 }
