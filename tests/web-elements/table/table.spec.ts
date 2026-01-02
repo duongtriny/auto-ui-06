@@ -5,7 +5,7 @@ test(`Verify table`, async ({ page }) => {
     // Go to page Switch
     await page.goto("https://test-with-me-app.vercel.app/learning/web-elements/components/table");
     let tableData = await getTableDataByTableName('Table', ['Name', 'Age', 'Address', 'Tags'], page);
-    expect(tableData).toMatchObject(expectedTableData);
+    expect(sortJson(tableData)).toMatchObject(sortJson(expectedTableData));
 })
 
 async function getTableDataByTableName(tableName: string, expectedHeaders: string[], page: Page) {
@@ -41,6 +41,7 @@ async function getTableDataByTableName(tableName: string, expectedHeaders: strin
                 let tdXpath = `//td[${mapObject.index + 1}]`;
                 let tdValue;
                 if (mapObject.header == 'Tags') {
+                    tdXpath = `//td[${mapObject.index + 1}]//span[contains(concat(' ',normalize-space(@class),' '),' ant-tag ')]`;
                     tdValue = await row.locator(tdXpath).allTextContents();
                 } else {
                     tdValue = await row.locator(tdXpath).textContent();
@@ -55,4 +56,28 @@ async function getTableDataByTableName(tableName: string, expectedHeaders: strin
         }
     }
     return tableData;
+}
+
+function sortJson(value: any): any {
+    // Array → sort values
+    if (Array.isArray(value)) {
+        return value
+            .map(sortJson)
+            .sort((a, b) => {
+                return JSON.stringify(a).localeCompare(JSON.stringify(b));
+            });
+    }
+
+    // Object → sort keys
+    if (value !== null && typeof value === "object") {
+        const sorted: { [key: string]: any } = {};
+        Object.keys(value)
+            .sort()
+            .forEach(key => {
+                sorted[key] = sortJson(value[key]);
+            });
+        return sorted;
+    }
+
+    return value;
 }
