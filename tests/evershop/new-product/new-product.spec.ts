@@ -1,9 +1,11 @@
 import { test, expect, Page } from '@playwright/test';
-import { adminLogin, clickButtonByLabel, inputTextboxByLabel } from '../../../model/common';
+import { LoginPage } from '../../../model/pages/login-page';
+
+let loginPage: LoginPage;
 
 test.beforeEach(async ({ page }) => {
-    await page.goto('http://localhost:3000/admin/login');
-    await adminLogin(page);
+    loginPage = new LoginPage(page);
+    await loginPage.adminLogin();
 });
 
 test('Verify creating new product', async ({ page }) => {
