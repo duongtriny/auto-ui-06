@@ -1,4 +1,5 @@
 import { test, expect, Page } from '@playwright/test';
+import { invalidLogin } from '../../../data/login/login-data';
 
 
 test('Verify admin login successful', async ({ page }) => {
@@ -8,40 +9,6 @@ test('Verify admin login successful', async ({ page }) => {
     await clickButtonByLabel('SIGN IN', page);
     await expect(page.locator('.page-heading-title')).toHaveText('Dashboard');
 });
-
-const invalidLogin = [
-    {
-        testCaseName: 'Verify email is empty',
-        input: {
-            'Email': '',
-            'Password': '123456789'
-        },
-        expect: {
-            'Email': 'Email is required'
-        }
-    },
-    {
-        testCaseName: 'Verify password is empty',
-        input: {
-            'Email': 'test@with.me',
-            'Password': ''
-        },
-        expect: {
-            'Password': 'Password is required'
-        }
-    },
-    {
-        testCaseName: 'Verify email and password are empty',
-        input: {
-            'Email': '',
-            'Password': ''
-        },
-        expect: {
-            'Email': 'Email is required',
-            'Password': 'Password is required'
-        }
-    }
-]
 
 for (let data of invalidLogin) {
     test(data.testCaseName, async ({ page }) => {
