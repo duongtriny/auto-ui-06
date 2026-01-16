@@ -19,4 +19,38 @@ export class CommonPage {
         let messageXpath = `(//label[normalize-space(text())="${label}"]//following::p[contains(concat(' ',normalize-space(@class),' '),' field-error ') and normalize-space()="${message}"])[1]`;
         await expect(this.page.locator(messageXpath)).toBeVisible();
     }
+
+    async clickMenuByLabel(label: string) {
+        let xpath = `//div[contains(concat(' ',normalize-space(@class),' '),' admin-navigation ')]//a[normalize-space()="${label}"]`;
+        await this.page.locator(xpath).click();
+    }
+
+    async inputTextByLabel(label: string, input: string) {
+        let xpath = `(//label[normalize-space(text())="${label}"]//following::input)[1]`;
+        let locator = this.page.locator(xpath);
+        await locator.clear();
+        await locator.fill(input);
+    }
+    async inputTextareaByLabel(label: string, input: string) {
+        let xpath = `(//label[normalize-space(text())="${label}"]//following::textarea)[1]`;
+        let locator = this.page.locator(xpath);
+        await locator.clear();
+        await locator.fill(input);
+    }
+
+    async selectDropdownByLabel(label: string, item: string) {
+        let dropdownXpath1 = `(//label[normalize-space(text())="${label}"]//following::select)[1]`;
+        let dropdownXpath2 = `(//td[normalize-space(.)="${label}"]//following::select)[1]`;
+        await this.page.locator(`${dropdownXpath1}|${dropdownXpath2}`).selectOption(item);
+    }
+
+    async clickRadioButtonByLabel(label: string, option: string) {
+        let xpath = `(//legend[normalize-space(text())="${label}"]//following::label[normalize-space()="${option}"])[1]`;
+        await this.page.locator(xpath).click();
+    }
+
+    async verifyPopupMessage(message: string) {
+        let xpath = `//*[@role='alert' and normalize-space()='${message}']`;
+        await expect(this.page.locator(xpath)).toBeVisible();
+    }
 }
