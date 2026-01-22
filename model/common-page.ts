@@ -77,4 +77,14 @@ export class CommonPage {
             }
         });
     }
+
+    async createProductByApi(requestBody: any, cookiesHeader: string) {
+        let myRequest = await request.newContext();
+        return await myRequest.post("http://localhost:3000/api/products", {
+            headers: {
+                cookie: cookiesHeader
+            },
+            data: requestBody
+        });
+    }
 }
