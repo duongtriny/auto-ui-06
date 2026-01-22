@@ -93,3 +93,40 @@ test('Verify creating new product 2', async ({ page, request }) => {
     productIds.push(editProductPage.getProductId());
     expect(await editProductPage.getFieldValueByLabel('Product Name')).toEqual(productName);
 });
+
+test('Verify error message when server return 500 error', async ({ page, request }) => {
+    const random = new Date().getTime();
+    await dashboardPage.clickMenuByLabel('New Product');
+    await newProductPage.isDisplay();
+    const productName = `Giày Chạy Bộ Biti's Hunter Running Nam Màu Xanh Dương ${random}`;
+    await newProductPage.inputTextByLabel('Product Name', productName);
+    await newProductPage.inputTextByLabel('SKU', `SKU-${random}`);
+    await newProductPage.inputTextByLabel('Price', "50");
+    await newProductPage.inputTextByLabel('Weight', "1");
+    await newProductPage.selectDropdownByLabel('Tax Class', 'Taxable Goods');
+    await newProductPage.uploadImage('data/new-product/images/bitis.jpg');
+    await newProductPage.clickRadioButtonByLabel('Status', 'Disabled');
+    await newProductPage.clickRadioButtonByLabel('Visibility', 'Not visible individually');
+    await newProductPage.clickRadioButtonByLabel('Manage Stock', 'No');
+    await newProductPage.clickRadioButtonByLabel('Stock Availability', 'Out of Stock');
+    await newProductPage.inputTextByLabel('Quantity', "100");
+    await newProductPage.inputTextByLabel('URL Key', `giay-chay-bo-biti-s-hunter-running-nam-mau-xanh-duong-${random}`);
+    await newProductPage.inputTextByLabel('Meta Title', "bitis, chay bo");
+    await newProductPage.selectDropdownByLabel('Attribute group', 'Default');
+    await newProductPage.selectDropdownByLabel('Color', 'White');
+    await newProductPage.selectDropdownByLabel('Size', 'XL');
+    await newProductPage.inputTextareaByLabel('Meta Description', "Giày Chạy Bộ Biti's Hunter Running Nam Xanh Dương Nâng Tầm Tốc Độ");
+    page.route('*/**/api/products', async route => {
+        await route.fulfill({
+            json: {
+                error: {
+                    status: 500,
+                    message: "Internal Server Error"
+                }
+            },
+            status: 500
+        });
+    });
+    await newProductPage.clickButtonByLabel('Save');
+    await newProductPage.verifyPopupMessage('Internal Server Error');
+});
