@@ -1,4 +1,5 @@
 import { expect, Page, request } from "@playwright/test";
+import { UI_BASE_URL } from "./utils/constants-utils";
 
 export class CommonPage {
     page: Page;
@@ -69,7 +70,7 @@ export class CommonPage {
     }
 
     async deleteProductByApi(productId: string, cookiesHeader: string) {
-        let url = `http://localhost:3000/api/products/${productId}`;
+        let url = `${UI_BASE_URL}/api/products/${productId}`;
         let myRequest = await request.newContext();
         await myRequest.delete(url, {
             headers: {
@@ -80,7 +81,7 @@ export class CommonPage {
 
     async createProductByApi(requestBody: any, cookiesHeader: string) {
         let myRequest = await request.newContext();
-        return await myRequest.post("http://localhost:3000/api/products", {
+        return await myRequest.post(`${UI_BASE_URL}/api/products`, {
             headers: {
                 cookie: cookiesHeader
             },
