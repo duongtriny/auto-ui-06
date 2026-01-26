@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test-local": "npx playwright test tests/evershop",
+    "test-stg": "TEST_ENV=stg npx playwright test tests/evershop"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -13,6 +16,7 @@
     "@types/node": "^24.10.1"
   },
   "dependencies": {
-    "deep-object-diff": "^1.1.9"
+    "deep-object-diff": "^1.1.9",
+    "dotenv": "^17.2.3"
   }
 }
