@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test-local": "npx playwright test tests/evershop",
-    "test-stg": "TEST_ENV=stg npx playwright test tests/evershop"
+    "test-stg": "TEST_ENV=stg npx playwright test tests/evershop",
+    "generate-report": "npx allure awesome --single-file allure-results"
   },
   "keywords": [],
   "author": "",

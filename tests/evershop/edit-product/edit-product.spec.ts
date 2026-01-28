@@ -5,6 +5,8 @@ import { DashboardPage } from '../../../model/pages/dashboard-page';
 import { ProductsPage } from '../../../model/pages/products-page';
 import { EditProductPage } from '../../../model/pages/edit-product-page';
 import { newProductBodyTemplate } from '../../../data/edit-product/edit-product-data';
+import * as allure from "allure-js-commons";
+import { iStep } from '../../../model/utils/step-utils';
 
 let loginPage: LoginPage;
 let newProductPage: NewProductPage;
@@ -31,20 +33,25 @@ test.afterAll('After all', async () => {
 
 test('Verify creating new product', async ({ page, request }) => {
     const random = new Date().getTime();
-    let requestBody = newProductBodyTemplate;
-    requestBody.name = `${requestBody.name} ${random}`;
-    requestBody.sku = `${requestBody.sku}${random}`;
-    requestBody.url_key = `${requestBody.url_key}${random}`;
-    let response = await dashboardPage.createProductByApi(requestBody, cookieHeader);
-    await expect(response).toBeOK();
-    let responseBody = await response.json();
-    productIds.push(responseBody.data.uuid);
-    let productName = requestBody.name;
-    await newProductPage.clickMenuByLabel("Products");
-    await productsPage.isDisplay();
-    await productsPage.searchProduct(random.toString());
-    await productsPage.selectProductByName(productName);
-    await editProductPage.isDisplay(`Editing ${productName}`);
+    let productName = "";
+    await iStep("Create product by API", async () => {
+        let requestBody = newProductBodyTemplate;
+        requestBody.name = `${requestBody.name} ${random}`;
+        requestBody.sku = `${requestBody.sku}${random}`;
+        requestBody.url_key = `${requestBody.url_key}${random}`;
+        let response = await dashboardPage.createProductByApi(requestBody, cookieHeader);
+        await expect(response).toBeOK();
+        let responseBody = await response.json();
+        productIds.push(responseBody.data.uuid);
+        productName = requestBody.name;
+    })
+    await iStep("View products", () => newProductPage.clickMenuByLabel("Products"));
+    await iStep("User should be on Products page", () => productsPage.isDisplay());
+    await iStep("Search product", () => productsPage.searchProduct(random.toString()));
+    await iStep("Select product by name", () => productsPage.selectProductByName(productName));
+    await iStep("User should be on Edit Product Page", () => editProductPage.isDisplay(`Editing ${productName}`));
+    await iStep("Verify product", async () => {
+        expect(await editProductPage.getFieldValueByLabel('Product Name')).toEqual(productName);
+    });
 
-    expect(await editProductPage.getFieldValueByLabel('Product Name')).toEqual(productName);
 });
