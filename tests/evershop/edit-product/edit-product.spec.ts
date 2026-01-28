@@ -1,11 +1,11 @@
-import { test, expect, Page } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
+import { test } from '../../../model/utils/fixtures';
 import { LoginPage } from '../../../model/pages/login-page';
 import { NewProductPage } from '../../../model/pages/new-product-page';
 import { DashboardPage } from '../../../model/pages/dashboard-page';
 import { ProductsPage } from '../../../model/pages/products-page';
 import { EditProductPage } from '../../../model/pages/edit-product-page';
 import { newProductBodyTemplate } from '../../../data/edit-product/edit-product-data';
-import * as allure from "allure-js-commons";
 import { iStep } from '../../../model/utils/step-utils';
 
 let loginPage: LoginPage;
